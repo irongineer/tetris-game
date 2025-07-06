@@ -104,7 +104,12 @@ export const clearLines = (
 
 export const calculateScore = (linesCleared: number, level: number): number => {
   const baseScores = [0, 40, 100, 300, 1200];
-  return baseScores[linesCleared] * (level + 1);
+  // 標準テトリス仕様：最大4ライン同時消去、それ以上は最高スコア適用
+  const clampedLines = Math.min(
+    Math.max(0, linesCleared),
+    baseScores.length - 1
+  );
+  return baseScores[clampedLines] * (level + 1);
 };
 
 export const calculateLevel = (lines: number): number => {
