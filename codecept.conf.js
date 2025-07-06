@@ -15,7 +15,7 @@ exports.config = {
     Playwright: {
       browser: 'chromium',
       url: 'http://localhost:3000',
-      show: true,
+      show: !process.env.CI,
       windowSize: '1200x900',
     },
   },
