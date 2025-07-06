@@ -23,21 +23,34 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          HUSKY: 0
 
       - name: Build application
         run: npm run build
+        env:
+          CI: true
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
+
+      - name: Create output directories
+        run: |
+          mkdir -p playwright-report
+          mkdir -p output
 
       - name: Start application server
         run: npm start &
 
       - name: Wait for server to be ready
-        run: sleep 5
+        run: |
+          sleep 5
+          curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000 || exit 1
 
       - name: Run E2E tests with Playwright
         run: npm run test:e2e
+        env:
+          CI: true
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -49,6 +62,8 @@ jobs:
 
       - name: Run E2E tests with CodeceptJS
         run: npm run test:codecept
+        env:
+          CI: true
 
       - name: Upload CodeceptJS test results
         uses: actions/upload-artifact@v4
