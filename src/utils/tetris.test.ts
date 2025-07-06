@@ -18,20 +18,43 @@ import {
   TETROMINO_COLORS,
 } from '@/types/tetris';
 
-describe('テトリスユーティリティ関数', () => {
-  describe('createEmptyBoard', () => {
-    it('正しいサイズの空のボードを作成する', () => {
-      const board = createEmptyBoard();
+/**
+ * テトリスゲームの実装仕様テスト
+ *
+ * このテストスイートは、テトリスゲームの各機能が
+ * 期待通りに動作することを検証します。
+ *
+ * テスト方針：
+ * - 境界値と異常系を重視
+ * - 各関数の責任範囲を明確化
+ * - ゲームルールの実装正確性を確認
+ */
+describe('テトリスゲーム実装仕様', () => {
+  describe('ボード生成機能', () => {
+    describe('新規ボード作成時', () => {
+      it('標準テトリス仕様（10×20）のボードを生成する', () => {
+        const board = createEmptyBoard();
 
-      expect(board).toHaveLength(BOARD_HEIGHT);
-      expect(board[0]).toHaveLength(BOARD_WIDTH);
+        expect(board, 'ボードの高さは20行').toHaveLength(BOARD_HEIGHT);
+        expect(board[0], 'ボードの幅は10列').toHaveLength(BOARD_WIDTH);
+      });
 
-      // 全てのセルが0で初期化されていることを確認
-      for (let y = 0; y < BOARD_HEIGHT; y++) {
-        for (let x = 0; x < BOARD_WIDTH; x++) {
-          expect(board[y][x]).toBe(0);
-        }
-      }
+      it('全セルが空状態で初期化される', () => {
+        const board = createEmptyBoard();
+
+        const isEmpty = board.every(row => row.every(cell => cell === 0));
+
+        expect(isEmpty, '新規ボードは完全に空である').toBe(true);
+      });
+
+      it('各行が独立したオブジェクトである（参照の共有なし）', () => {
+        const board = createEmptyBoard();
+
+        board[0][0] = 1;
+
+        expect(board[1][0], '他の行に影響しない').toBe(0);
+        expect(board[0][1], '同行の他のセルにも影響しない').toBe(0);
+      });
     });
   });
 

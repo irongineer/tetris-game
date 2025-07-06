@@ -11,13 +11,7 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     css: true,
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    exclude: [
-      'node_modules/**',
-      'tests/**',
-      'tests-codecept/**',
-      '**/*.spec.ts',
-      'output/**',
-    ],
+    exclude: ['node_modules/**', 'tests/**', 'tests-codecept/**', 'output/**'],
     coverage: {
       reporter: ['text', 'json', 'html'],
       exclude: ['node_modules/', 'src/test/', 'tests/', 'tests-codecept/'],
