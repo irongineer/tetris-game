@@ -9,10 +9,64 @@
 
 ## 開発コマンド
 
-- `npm run dev` - Turbopackを使った開発サーバーの起動（http://localhost:3000で実行）
-- `npm run build` - 本番用アプリケーションのビルド
-- `npm start` - 本番サーバーの起動
-- `npm run lint` - コード品質チェック用ESLintの実行
+### ゲーム開発
+
+```bash
+# 開発サーバー起動 (http://localhost:3000)
+npm run dev
+
+# 本番ビルド
+npm run build
+
+# 本番サーバー起動
+npm start
+```
+
+### テスト実行
+
+```bash
+# 全テスト実行 (180個)
+npm run test:all
+
+# ユニットテスト (151個)
+npm run test:unit          # watch mode
+npm run test:unit:run      # 1回実行
+npm run test:unit:coverage # カバレッジ付き
+
+# E2Eテスト - Playwright (18個)
+npm run test:e2e           # headless
+npm run test:e2e:headed    # ブラウザ表示
+npm run test:e2e:ui        # UIモード
+
+# E2Eテスト - CodeceptJS (11個)
+npm run test:codecept
+npm run test:codecept:verbose
+```
+
+### 品質管理
+
+```bash
+# 全品質チェック
+npm run quality
+
+# 品質チェック + 自動修正
+npm run quality:fix
+
+# 個別実行
+npm run type-check    # TypeScript型チェック
+npm run lint          # ESLint
+npm run lint:fix      # ESLint + 自動修正
+npm run format        # Prettier
+npm run format:check  # Prettier検証
+```
+
+### 継続的品質保証
+
+```bash
+# GitHub Actions daily E2E tests
+# 毎日午前9時(JST)に自動実行
+# 手動実行も可能: Actions タブから「Daily E2E Tests」を選択
+```
 
 ## アーキテクチャ
 

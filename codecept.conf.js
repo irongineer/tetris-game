@@ -21,7 +21,7 @@ exports.config = {
   },
   include: {
     I: './steps_file.js',
-    tetrisGamePage: './pages/TetrisGamePage.js',
+    tetrisGamePage: './tests-codecept/pages/TetrisGamePage.js',
   },
   name: 'tetris-game',
   plugins: {
