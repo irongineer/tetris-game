@@ -62,3 +62,25 @@ export const TETROMINO_COLORS = {
   J: '#0000f0',
   L: '#f0a000',
 };
+
+// セル状態の定数化 - マジックナンバー排除
+export const CELL_TYPES = {
+  EMPTY: 0,
+  PLACED: 1,
+  CURRENT_PIECE: 2,
+} as const;
+
+export type CellType = (typeof CELL_TYPES)[keyof typeof CELL_TYPES];
+
+// ランダム生成の抽象化インターface
+export interface RandomGenerator {
+  (): number;
+}
+
+// ゲーム設定の型定義
+export interface TetrisConfig {
+  randomGenerator?: RandomGenerator;
+  dropSpeedBase?: number;
+  dropSpeedDecrement?: number;
+  linesPerLevel?: number;
+}

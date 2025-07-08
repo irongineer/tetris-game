@@ -1,40 +1,26 @@
-import {
-  Tetromino,
-  TetrominoType,
-  Position,
-  BOARD_WIDTH,
-  BOARD_HEIGHT,
-  TETROMINO_SHAPES,
-  TETROMINO_COLORS,
-} from '@/types/tetris';
+import { TetrisEngine } from '@/engine/TetrisEngine';
+import { Tetromino, Position, GameState } from '@/types/tetris';
+
+/**
+ * 既存APIとの互換性を保つためのユーティリティ関数
+ * 内部的にはTetrisEngineに委譲
+ *
+ * t-wada思想: 既存のテストを壊さずに段階的にリファクタリング
+ */
+
+// デフォルトエンジンインスタンス（互換性のため）
+const defaultEngine = new TetrisEngine();
 
 export const createEmptyBoard = (): number[][] => {
-  return Array(BOARD_HEIGHT)
-    .fill(null)
-    .map(() => Array(BOARD_WIDTH).fill(0));
+  return defaultEngine.createEmptyBoard();
 };
 
 export const getRandomTetromino = (): Tetromino => {
-  const types: TetrominoType[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'];
-  const randomType = types[Math.floor(Math.random() * types.length)];
-
-  return {
-    type: randomType,
-    shape: TETROMINO_SHAPES[randomType],
-    position: { x: Math.floor(BOARD_WIDTH / 2) - 1, y: 0 },
-    color: TETROMINO_COLORS[randomType],
-  };
+  return defaultEngine.getRandomTetromino();
 };
 
 export const rotateTetromino = (tetromino: Tetromino): Tetromino => {
-  const rotatedShape = tetromino.shape[0].map((_, index) =>
-    tetromino.shape.map(row => row[index]).reverse()
-  );
-
-  return {
-    ...tetromino,
-    shape: rotatedShape,
-  };
+  return defaultEngine.rotateTetromino(tetromino);
 };
 
 export const isValidPosition = (
@@ -42,84 +28,56 @@ export const isValidPosition = (
   tetromino: Tetromino,
   newPosition: Position
 ): boolean => {
-  for (let y = 0; y < tetromino.shape.length; y++) {
-    for (let x = 0; x < tetromino.shape[y].length; x++) {
-      if (tetromino.shape[y][x] !== 0) {
-        const newX = newPosition.x + x;
-        const newY = newPosition.y + y;
-
-        if (
-          newX < 0 ||
-          newX >= BOARD_WIDTH ||
-          newY >= BOARD_HEIGHT ||
-          (newY >= 0 && board[newY][newX] !== 0)
-        ) {
-          return false;
-        }
-      }
-    }
-  }
-  return true;
+  return defaultEngine.isValidPosition(board, tetromino, newPosition);
 };
 
 export const placeTetromino = (
   board: number[][],
   tetromino: Tetromino
 ): number[][] => {
-  const newBoard = board.map(row => [...row]);
-
-  for (let y = 0; y < tetromino.shape.length; y++) {
-    for (let x = 0; x < tetromino.shape[y].length; x++) {
-      if (tetromino.shape[y][x] !== 0) {
-        const boardY = tetromino.position.y + y;
-        const boardX = tetromino.position.x + x;
-
-        if (
-          boardY >= 0 &&
-          boardY < BOARD_HEIGHT &&
-          boardX >= 0 &&
-          boardX < BOARD_WIDTH
-        ) {
-          newBoard[boardY][boardX] = 1;
-        }
-      }
-    }
-  }
-
-  return newBoard;
+  return defaultEngine.placeTetromino(board, tetromino);
 };
 
 export const clearLines = (
   board: number[][]
 ): { newBoard: number[][]; linesCleared: number } => {
-  const newBoard = board.filter(row => !row.every(cell => cell !== 0));
-  const linesCleared = BOARD_HEIGHT - newBoard.length;
-
-  while (newBoard.length < BOARD_HEIGHT) {
-    newBoard.unshift(Array(BOARD_WIDTH).fill(0));
-  }
-
-  return { newBoard, linesCleared };
+  return defaultEngine.clearLines(board);
 };
 
 export const calculateScore = (linesCleared: number, level: number): number => {
-  const baseScores = [0, 40, 100, 300, 1200];
-  // 標準テトリス仕様：最大4ライン同時消去、それ以上は最高スコア適用
-  const clampedLines = Math.min(
-    Math.max(0, linesCleared),
-    baseScores.length - 1
-  );
-  return baseScores[clampedLines] * (level + 1);
+  return defaultEngine.calculateScore(linesCleared, level);
 };
 
 export const calculateLevel = (lines: number): number => {
-  return Math.floor(lines / 10);
+  return defaultEngine.calculateLevel(lines);
 };
 
 export const getDropSpeed = (level: number): number => {
-  return Math.max(50, 1000 - level * 50);
+  return defaultEngine.getDropSpeed(level);
 };
 
 export const isGameOver = (board: number[][], newPiece: Tetromino): boolean => {
-  return !isValidPosition(board, newPiece, newPiece.position);
+  return defaultEngine.isGameOver(board, newPiece);
+};
+
+// 新しい関数 - 重複コード排除のため
+export const applyPiecePlacement = (
+  gameState: GameState,
+  piece: Tetromino
+): Partial<GameState> => {
+  return defaultEngine.applyPiecePlacement(gameState, piece);
+};
+
+export const calculateHardDropPosition = (
+  board: number[][],
+  piece: Tetromino
+): Position => {
+  return defaultEngine.calculateHardDropPosition(board, piece);
+};
+
+// エンジンインスタンスの作成（設定可能）
+export const createTetrisEngine = (
+  config?: ConstructorParameters<typeof TetrisEngine>[0]
+) => {
+  return new TetrisEngine(config);
 };
