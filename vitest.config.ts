@@ -14,7 +14,20 @@ export default defineConfig({
     exclude: ['node_modules/**', 'tests/**', 'tests-codecept/**', 'output/**'],
     coverage: {
       reporter: ['text', 'json', 'html'],
-      exclude: ['node_modules/', 'src/test/', 'tests/', 'tests-codecept/'],
+      exclude: [
+        'node_modules/',
+        'src/test/',
+        'tests/',
+        'tests-codecept/',
+        '.next/',
+        'src/app/',
+        'src/**/*.d.ts',
+        'src/**/*.config.*',
+        'src/**/*.spec.*',
+        'src/**/*.test.*',
+      ],
+      include: ['src/**/*.{ts,tsx}'],
+      skipFull: true,
     },
   },
   resolve: {
