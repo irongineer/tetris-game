@@ -2,9 +2,10 @@
 
 高品質なテトリスゲーム実装と、t-wada流テスト手法を駆使したエンタープライズレベルのQA改善プロジェクトです。
 
-[![Tests](https://img.shields.io/badge/tests-180_passing-brightgreen)](./src/__tests__)
+[![Tests](https://img.shields.io/badge/tests-173_passing-brightgreen)](./src/__tests__)
 [![Coverage](https://img.shields.io/badge/coverage-high-brightgreen)](#テスト構成)
 [![Quality](https://img.shields.io/badge/quality-enterprise-blue)](#品質保証)
+[![TDD](https://img.shields.io/badge/TDD-t--wada_style-blue)](#t-wada流テスト設計思想)
 [![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 
 ## 🌟 プロジェクト概要
@@ -13,10 +14,11 @@
 
 ### 🎯 主要特徴
 
-- **完全機能のテトリスゲーム**: 標準的なゲームプレイメカニクス
-- **エンタープライズレベルの品質**: 180個のテスト全てが成功
-- **モダンな技術スタック**: Next.js 15, TypeScript, Tailwind CSS
-- **包括的なテスト戦略**: ユニット・E2E・Property-Based・TestDoubles
+- **完全機能のテトリスゲーム**: 標準的なゲームプレイメカニクス + ハイスコア機能
+- **エンタープライズレベルの品質**: 173個のテスト全てが成功
+- **t-wada流TDD実装**: 完全なRed→Green→Refactorサイクル実践
+- **モダンな技術スタック**: Next.js 15, React 19, TypeScript (strict mode)
+- **包括的なテスト戦略**: ユニット・E2E・Property-Based・TestDoubles・TDD
 - **アクセシビリティ対応**: キーボードナビゲーション・レスポンシブデザイン
 
 ## 🏗️ 技術スタック
@@ -96,12 +98,12 @@ npm run test:codecept:verbose
 
 ### テスト構成詳細
 
-| テスト種別           | ファイル数 | テスト数 | 目的                            |
-| -------------------- | ---------- | -------- | ------------------------------- |
-| **ユニットテスト**   | 8          | 151      | ロジック・コンポーネント・Hooks |
-| **E2E (Playwright)** | 2          | 18       | ユーザーストーリー・機能仕様    |
-| **E2E (CodeceptJS)** | 2          | 11       | BDD形式・読みやすいシナリオ     |
-| **合計**             | **12**     | **180**  | **包括的品質保証**              |
+| テスト種別           | ファイル数 | テスト数 | 目的                                 |
+| -------------------- | ---------- | -------- | ------------------------------------ |
+| **ユニットテスト**   | 10         | 173      | ロジック・コンポーネント・Hooks・TDD |
+| **E2E (Playwright)** | 2          | 18       | ユーザーストーリー・機能仕様         |
+| **E2E (CodeceptJS)** | 2          | 11       | BDD形式・読みやすいシナリオ          |
+| **合計**             | **14**     | **202**  | **包括的品質保証**                   |
 
 #### ユニットテスト詳細
 
@@ -124,10 +126,15 @@ npm run test:codecept:verbose
    - モック・スタブ・フェイクによる外部依存制御
    - 決定論的テスト実現
 
-6. **コンポーネント** (`*.test.tsx`) - 18テスト
-   - React コンポーネントの動作検証
+6. **🏆 TDD実装** (`highscore.tdd.test.ts`) - 12テスト
+   - 完全なRed→Green→Refactorサイクル実践
+   - LocalStorageデータ管理・エラーハンドリング
 
-7. **Hooks** (`useKeyboard.test.ts`) - 12テスト
+7. **コンポーネント** (`*.test.tsx`) - 28テスト
+   - React コンポーネントの動作検証
+   - ハイスコアUI機能のテスト
+
+8. **Hooks** (`useKeyboard.test.ts`) - 12テスト
    - カスタムフックの詳細テスト
 
 #### E2Eテスト詳細
@@ -170,7 +177,7 @@ npm run quality:fix
 - **TypeScript**: strict mode, 完全型安全
 - **ESLint**: @typescript-eslint + SonarJS ルール適用
 - **コードカバレッジ**: 高カバレッジ達成
-- **テスト成功率**: 100% (180/180)
+- **テスト成功率**: 100% (173/173 ユニット + 29/29 E2E)
 - **ゼロ警告**: すべての静的解析警告解消済み
 
 ### Git Hooks
@@ -188,14 +195,31 @@ pre-commitで以下を自動実行:
 ```
 tetris-game/
 ├── src/
-│   ├── app/                 # Next.js App Router
-│   ├── components/          # React コンポーネント
-│   ├── hooks/              # カスタムフック
-│   ├── types/              # TypeScript 型定義
-│   ├── utils/              # ゲームロジック
-│   └── __tests__/          # 各種テストファイル
-├── tests/                  # E2Eテスト (Playwright)
-├── tests-codecept/         # E2Eテスト (CodeceptJS)
+│   ├── app/                    # Next.js App Router
+│   ├── components/             # React コンポーネント
+│   │   ├── TetrisBoard.tsx     # ゲームボード表示
+│   │   ├── GameInfo.tsx        # スコア・状態表示
+│   │   └── HighScorePanel.tsx  # ハイスコア機能 (TDD実装)
+│   ├── hooks/                  # カスタムフック
+│   │   ├── useTetris.ts        # ゲーム状態管理
+│   │   └── useKeyboard.ts      # キーボード制御
+│   ├── types/                  # TypeScript 型定義
+│   │   ├── tetris.ts           # ゲーム型システム
+│   │   └── highscore.ts        # ハイスコア型定義 (TDD実装)
+│   ├── utils/                  # ゲームロジック
+│   │   ├── tetris.ts           # 純粋関数ロジック
+│   │   └── highscore.ts        # ハイスコア機能 (TDD実装)
+│   ├── engine/                 # コアエンジン
+│   │   └── TetrisEngine.ts     # 依存性注入対応エンジン
+│   └── __tests__/              # 各種テストファイル
+│       ├── tetris.test.ts                # 基本ロジックテスト (22)
+│       ├── tetris.spec.ts                # t-wada流仕様化テスト (25)
+│       ├── tetris.boundary.spec.ts       # 境界値テスト (42)
+│       ├── tetris.property.test.ts       # Property-Based Testing (23)
+│       ├── tetris.testdoubles.test.ts    # テストダブル (9)
+│       └── highscore.tdd.test.ts         # TDD実装テスト (12)
+├── tests/                      # E2Eテスト (Playwright)
+├── tests-codecept/             # E2Eテスト (CodeceptJS)
 └── 設定ファイル群
 ```
 
@@ -213,9 +237,17 @@ tetris-game/
    - 純粋関数によるコアロジック
    - テスタブルな設計
 
-4. **型システム** (`types/tetris.ts`)
+4. **型システム** (`types/tetris.ts`, `types/highscore.ts`)
    - 完全な型安全性
    - ゲーム状態の厳密な定義
+   - ハイスコア機能の型定義 (TDD実装)
+
+5. **🏆 ハイスコア機能** (`utils/highscore.ts`) - TDD実装
+   - LocalStorageによる永続化
+   - スコア降順ソート（最大10件制限）
+   - プレイヤー名文字数制限（20文字）
+   - 日付別・プレイヤー別フィルタリング
+   - 堅牢なエラーハンドリング
 
 ## 🚧 開発プロセス
 
@@ -237,6 +269,25 @@ tetris-game/
 - **症状**: ライン数≥5でNaN返却
 - **原因**: `baseScores[linesCleared]`で未定義値アクセス
 - **修正**: 適切な範囲チェックとクランプ処理
+
+### 🏆 TDD実装事例: ハイスコア機能
+
+**完全なt-wada流TDD実装**を実践:
+
+1. **🔴 Red**: 12個の失敗テストを先に作成
+   - LocalStorageデータ管理の仕様明確化
+   - エラーハンドリングとエッジケース対応
+   - Given-When-Then構造による仕様化テスト
+
+2. **🟢 Green**: 最小限のコードで全テストを通過
+   - 外部依存関係の制御（LocalStorage）
+   - 適切なエラーハンドリング実装
+   - 型安全性の確保
+
+3. **🔵 Refactor**: 品質向上のリファクタリング
+   - 純粋関数による責任分離
+   - 可読性とメンテナンス性の向上
+   - 単一責任の原則適用
 
 ## 🎯 特筆すべき技術的成果
 
@@ -271,18 +322,22 @@ tetris-game/
 
 - **総開発工数**: 高品質QA改善に特化
 - **コミット数**: 段階的な品質向上を記録
-- **テスト追加**: 基本6テスト → 180テスト (30倍増)
+- **テスト追加**: 基本6テスト → 173テスト (約29倍増)
 - **バグ修正**: Property-Based Testing による重要バグ1件発見・修正
+- **TDD実装**: ハイスコア機能の完全なRed→Green→Refactorサイクル
 
 ## 🤝 貢献
 
 このプロジェクトは教育・学習目的で作成されており、以下の技術習得に活用できます:
 
-- t-wada流テスト設計手法
-- Property-Based Testing実践
-- TypeScript型安全プログラミング
-- モダンReact開発パターン
-- 包括的QA戦略の構築
+- **t-wada流テスト設計手法**: 仕様化テスト・境界値テスト・Given-When-Then
+- **TDD実装**: Red→Green→Refactorサイクルの完全実践
+- **Property-Based Testing実践**: fast-checkライブラリ活用
+- **TypeScript型安全プログラミング**: strict mode・完全型定義
+- **モダンReact開発パターン**: hooks・コンポーネント設計
+- **包括的QA戦略の構築**: 静的解析・自動化・継続的品質改善
+
+詳細な貢献ガイドラインは [CONTRIBUTING.md](./CONTRIBUTING.md) を参照してください。
 
 ## 📄 ライセンス
 
@@ -291,11 +346,11 @@ MIT License - 詳細は [LICENSE](./LICENSE) を参照
 ## 🙏 謝辞
 
 - **和田卓人氏 (t-wada)**: テスト設計思想とベストプラクティスの提供
-- **Claude Code**: 包括的なQA改善の実装支援
+- **Claude Code**: 包括的なQA改善・TDD実装の支援
 - **オープンソースコミュニティ**: 素晴らしいツールとライブラリの提供
 
 ---
 
 **🎮 高品質なゲーム開発と、エンタープライズレベルのQA実践の融合**
 
-このプロジェクトは、ゲーム開発の楽しさと、現代的なソフトウェア品質保証の厳格さを両立させた、教育的価値の高い実装例です。
+このプロジェクトは、ゲーム開発の楽しさと、現代的なソフトウェア品質保証の厳格さを両立させた、教育的価値の高い実装例です。特に**t-wada流TDD実装**を通じて、テストファースト設計の実践的な学習ができる貴重なリソースとなっています。
