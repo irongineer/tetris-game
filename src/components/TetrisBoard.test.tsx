@@ -68,9 +68,9 @@ describe('TetrisBoard コンポーネント', () => {
 
   it('配置済みのピースがグレー色で描画される', () => {
     const boardWithPlacedPieces = createEmptyBoard();
-    boardWithPlacedPieces[19][0] = 1;
-    boardWithPlacedPieces[19][1] = 1;
-    boardWithPlacedPieces[19][2] = 1;
+    boardWithPlacedPieces[19]![0] = 1;
+    boardWithPlacedPieces[19]![1] = 1;
+    boardWithPlacedPieces[19]![2] = 1;
 
     const gameStateWithPlacedPieces = {
       ...mockGameState,
@@ -135,10 +135,10 @@ describe('TetrisBoard コンポーネント', () => {
 
     // 複数の配置済みピースを配置
     for (let x = 0; x < 5; x++) {
-      boardWithMultiplePieces[19][x] = 1;
+      boardWithMultiplePieces[19]![x] = 1;
     }
     for (let x = 2; x < 7; x++) {
-      boardWithMultiplePieces[18][x] = 1;
+      boardWithMultiplePieces[18]![x] = 1;
     }
 
     const gameStateWithMultiplePieces = {

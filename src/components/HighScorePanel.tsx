@@ -31,7 +31,11 @@ interface HighScorePanelProps {
  * 現在の日付を取得（YYYY-MM-DD形式）
  */
 const getCurrentDate = (): string => {
-  return new Date().toISOString().split('T')[0];
+  const datePart = new Date().toISOString().split('T')[0];
+  if (!datePart) {
+    throw new Error('Invalid date format');
+  }
+  return datePart;
 };
 
 /**
@@ -56,9 +60,10 @@ export const HighScorePanel: React.FC<HighScorePanelProps> = ({
 
     // 新しいハイスコアかチェック
     if (gameOver && currentScore > 0) {
+      const lastScore = scores[scores.length - 1];
       const isNewRecord =
-        scores.length < 10 || currentScore > scores[scores.length - 1]?.score;
-      setIsNewHighScore(isNewRecord);
+        scores.length < 10 || (lastScore && currentScore > lastScore.score);
+      setIsNewHighScore(Boolean(isNewRecord));
     }
   }, [gameOver, currentScore]);
 

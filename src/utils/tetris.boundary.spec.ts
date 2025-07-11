@@ -154,7 +154,7 @@ describe('テトリス境界値・エッジケース仕様', () => {
       const speeds = Array.from({ length: 20 }, (_, i) => getDropSpeed(i));
 
       for (let i = 1; i < speeds.length; i++) {
-        expect(speeds[i]).toBeLessThanOrEqual(speeds[i - 1]);
+        expect(speeds[i]).toBeLessThanOrEqual(speeds[i - 1] ?? 0);
       }
     });
   });
@@ -192,7 +192,7 @@ describe('テトリス境界値・エッジケース仕様', () => {
         // 偶数行のみを満杯にする
         for (let y = 0; y < BOARD_HEIGHT; y += 2) {
           for (let x = 0; x < BOARD_WIDTH; x++) {
-            board[y][x] = 1;
+            board[y]![x] = 1;
           }
         }
 
@@ -219,7 +219,7 @@ describe('テトリス境界値・エッジケース仕様', () => {
     it('ライン消去後も元のボードは変更されない', () => {
       const board = createEmptyBoard();
       for (let x = 0; x < BOARD_WIDTH; x++) {
-        board[BOARD_HEIGHT - 1][x] = 1;
+        board[BOARD_HEIGHT - 1]![x] = 1;
       }
 
       const boardCopy = board.map(row => [...row]);

@@ -25,8 +25,12 @@ const TetrisBoard: React.FC<TetrisBoardProps> = ({ gameState }) => {
     if (!currentPiece) return displayBoard;
 
     for (let y = 0; y < currentPiece.shape.length; y++) {
-      for (let x = 0; x < currentPiece.shape[y].length; x++) {
-        if (currentPiece.shape[y][x] !== CELL_TYPES.EMPTY) {
+      const row = currentPiece.shape[y];
+      if (!row) continue;
+
+      for (let x = 0; x < row.length; x++) {
+        const cell = row[x];
+        if (cell !== undefined && cell !== CELL_TYPES.EMPTY) {
           const boardY = currentPiece.position.y + y;
           const boardX = currentPiece.position.x + x;
 
@@ -34,9 +38,12 @@ const TetrisBoard: React.FC<TetrisBoardProps> = ({ gameState }) => {
             boardY >= 0 &&
             boardY < displayBoard.length &&
             boardX >= 0 &&
-            boardX < displayBoard[0].length
+            boardX < (displayBoard[0]?.length ?? 0)
           ) {
-            displayBoard[boardY][boardX] = CELL_TYPES.CURRENT_PIECE;
+            const targetRow = displayBoard[boardY];
+            if (targetRow) {
+              targetRow[boardX] = CELL_TYPES.CURRENT_PIECE;
+            }
           }
         }
       }

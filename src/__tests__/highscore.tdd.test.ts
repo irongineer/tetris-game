@@ -140,9 +140,9 @@ describe('🏆 ハイスコア機能 - TDD実装', () => {
       const retrievedScores = getHighScores();
 
       // Then: スコア降順でソートされている
-      expect(retrievedScores[0].score).toBe(15000);
-      expect(retrievedScores[1].score).toBe(12000);
-      expect(retrievedScores[2].score).toBe(8000);
+      expect(retrievedScores[0]?.score).toBe(15000);
+      expect(retrievedScores[1]?.score).toBe(12000);
+      expect(retrievedScores[2]?.score).toBe(8000);
     });
 
     it('[GREEN] 最大10件でハイスコアを制限する', () => {
@@ -165,8 +165,8 @@ describe('🏆 ハイスコア機能 - TDD実装', () => {
       // Then: 最大10件に制限される
       expect(retrievedScores).toHaveLength(10);
       // 上位10件のみ残る
-      expect(retrievedScores[0].score).toBe(12000);
-      expect(retrievedScores[9].score).toBe(3000);
+      expect(retrievedScores[0]?.score).toBe(12000);
+      expect(retrievedScores[9]?.score).toBe(3000);
     });
   });
 
@@ -223,7 +223,7 @@ describe('🏆 ハイスコア機能 - TDD実装', () => {
       const scores = getHighScores();
 
       // Then: プレイヤー名は最大20文字に制限される
-      expect(scores[0].playerName).toHaveLength(20);
+      expect(scores[0]?.playerName).toHaveLength(20);
     });
   });
 
@@ -295,12 +295,12 @@ describe('🏆 ハイスコア機能 - TDD実装', () => {
       // Then: 今日のスコアのみ取得
       const todayScores = getScoresByDate('2024-01-15');
       expect(todayScores).toHaveLength(1);
-      expect(todayScores[0].score).toBe(15000);
+      expect(todayScores[0]?.score).toBe(15000);
 
       // Then: 昨日のスコアのみ取得
       const yesterdayScores = getScoresByDate('2024-01-14');
       expect(yesterdayScores).toHaveLength(1);
-      expect(yesterdayScores[0].score).toBe(20000);
+      expect(yesterdayScores[0]?.score).toBe(20000);
     });
   });
 });

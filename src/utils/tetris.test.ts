@@ -50,10 +50,10 @@ describe('テトリスゲーム実装仕様', () => {
       it('各行が独立したオブジェクトである（参照の共有なし）', () => {
         const board = createEmptyBoard();
 
-        board[0][0] = 1;
+        board[0]![0] = 1;
 
-        expect(board[1][0], '他の行に影響しない').toBe(0);
-        expect(board[0][1], '同行の他のセルにも影響しない').toBe(0);
+        expect(board[1]?.[0], '他の行に影響しない').toBe(0);
+        expect(board[0]?.[1], '同行の他のセルにも影響しない').toBe(0);
       });
     });
   });
@@ -217,9 +217,9 @@ describe('テトリスゲーム実装仕様', () => {
 
     it('既存のピースと重なる位置でfalseを返す', () => {
       // ボードの一部にピースを配置
-      board[BOARD_HEIGHT - 1][3] = 1;
-      board[BOARD_HEIGHT - 1][4] = 1;
-      board[BOARD_HEIGHT - 1][5] = 1;
+      board[BOARD_HEIGHT - 1]![3] = 1;
+      board[BOARD_HEIGHT - 1]![4] = 1;
+      board[BOARD_HEIGHT - 1]![5] = 1;
 
       const tetromino = {
         type: 'T' as const,
@@ -255,13 +255,13 @@ describe('テトリスゲーム実装仕様', () => {
       const newBoard = placeTetromino(board, tetromino);
 
       // 元のボードは変更されない
-      expect(board[BOARD_HEIGHT - 3][4]).toBe(0);
+      expect(board[BOARD_HEIGHT - 3]?.[4]).toBe(0);
 
       // 新しいボードにテトロミノが配置される
-      expect(newBoard[BOARD_HEIGHT - 3][4]).toBe(1); // T字の上部
-      expect(newBoard[BOARD_HEIGHT - 2][3]).toBe(1); // T字の左部
-      expect(newBoard[BOARD_HEIGHT - 2][4]).toBe(1); // T字の中央部
-      expect(newBoard[BOARD_HEIGHT - 2][5]).toBe(1); // T字の右部
+      expect(newBoard[BOARD_HEIGHT - 3]?.[4]).toBe(1); // T字の上部
+      expect(newBoard[BOARD_HEIGHT - 2]?.[3]).toBe(1); // T字の左部
+      expect(newBoard[BOARD_HEIGHT - 2]?.[4]).toBe(1); // T字の中央部
+      expect(newBoard[BOARD_HEIGHT - 2]?.[5]).toBe(1); // T字の右部
     });
 
     it('ボード境界外への配置は無視される', () => {
@@ -281,9 +281,9 @@ describe('テトリスゲーム実装仕様', () => {
       const newBoard = placeTetromino(board, tetromino);
 
       // 境界内の部分のみ配置される
-      expect(newBoard[1][0]).toBe(1);
-      expect(newBoard[1][1]).toBe(1);
-      expect(newBoard[1][2]).toBe(1);
+      expect(newBoard[1]?.[0]).toBe(1);
+      expect(newBoard[1]?.[1]).toBe(1);
+      expect(newBoard[1]?.[2]).toBe(1);
     });
   });
 
@@ -293,20 +293,20 @@ describe('テトリスゲーム実装仕様', () => {
 
       // 最下行を完全に埋める
       for (let x = 0; x < BOARD_WIDTH; x++) {
-        board[BOARD_HEIGHT - 1][x] = 1;
+        board[BOARD_HEIGHT - 1]![x] = 1;
       }
 
       // その上の行に部分的にブロックを配置
-      board[BOARD_HEIGHT - 2][0] = 1;
-      board[BOARD_HEIGHT - 2][1] = 1;
+      board[BOARD_HEIGHT - 2]![0] = 1;
+      board[BOARD_HEIGHT - 2]![1] = 1;
 
       const { newBoard, linesCleared } = clearLines(board);
 
       expect(linesCleared).toBe(1);
-      expect(newBoard[BOARD_HEIGHT - 1][0]).toBe(1); // 部分的な行が下に移動
-      expect(newBoard[BOARD_HEIGHT - 1][1]).toBe(1);
-      expect(newBoard[BOARD_HEIGHT - 1][2]).toBe(0); // 他は空
-      expect(newBoard[0].every(cell => cell === 0)).toBe(true); // 上部に新しい空行
+      expect(newBoard[BOARD_HEIGHT - 1]?.[0]).toBe(1); // 部分的な行が下に移動
+      expect(newBoard[BOARD_HEIGHT - 1]?.[1]).toBe(1);
+      expect(newBoard[BOARD_HEIGHT - 1]?.[2]).toBe(0); // 他は空
+      expect(newBoard[0]?.every(cell => cell === 0)).toBe(true); // 上部に新しい空行
     });
 
     it('複数行を同時にクリアする', () => {
@@ -314,20 +314,20 @@ describe('テトリスゲーム実装仕様', () => {
 
       // 最下2行を完全に埋める
       for (let x = 0; x < BOARD_WIDTH; x++) {
-        board[BOARD_HEIGHT - 1][x] = 1;
-        board[BOARD_HEIGHT - 2][x] = 1;
+        board[BOARD_HEIGHT - 1]![x] = 1;
+        board[BOARD_HEIGHT - 2]![x] = 1;
       }
 
       const { newBoard, linesCleared } = clearLines(board);
 
       expect(linesCleared).toBe(2);
-      expect(newBoard[BOARD_HEIGHT - 1].every(cell => cell === 0)).toBe(true);
-      expect(newBoard[BOARD_HEIGHT - 2].every(cell => cell === 0)).toBe(true);
+      expect(newBoard[BOARD_HEIGHT - 1]?.every(cell => cell === 0)).toBe(true);
+      expect(newBoard[BOARD_HEIGHT - 2]?.every(cell => cell === 0)).toBe(true);
     });
 
     it('クリアする行がない場合', () => {
       const board = createEmptyBoard();
-      board[BOARD_HEIGHT - 1][0] = 1; // 1つだけブロックを配置
+      board[BOARD_HEIGHT - 1]![0] = 1; // 1つだけブロックを配置
 
       const { newBoard, linesCleared } = clearLines(board);
 
@@ -395,8 +395,8 @@ describe('テトリスゲーム実装仕様', () => {
 
       // 上部を埋めてゲームオーバー状態を作る
       for (let x = 0; x < BOARD_WIDTH; x++) {
-        board[0][x] = 1;
-        board[1][x] = 1;
+        board[0]![x] = 1;
+        board[1]![x] = 1;
       }
 
       const tetromino = {

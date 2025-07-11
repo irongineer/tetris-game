@@ -14,20 +14,20 @@
     "jsx": "preserve",
     "incremental": true,
 
-    // 厳格なTypeScript設定
+    // 厳格なTypeScript設定の強化
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": false,
-    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": true, // 強化: 配列・オブジェクトアクセスの型安全性
+    "exactOptionalPropertyTypes": true, // 強化: オプションプロパティの厳密性
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": false,
+    "noPropertyAccessFromIndexSignature": true, // 強化: インデックス署名からのプロパティアクセス制限
     "noUncheckedSideEffectImports": true,
 
-    // 未使用変数・インポートの検出
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    // 未使用変数・インポートの検出強化
+    "noUnusedLocals": true, // 強化: 未使用ローカル変数の検出
+    "noUnusedParameters": true, // 強化: 未使用パラメータの検出
 
     // その他の品質チェック
     "forceConsistentCasingInFileNames": true,

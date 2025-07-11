@@ -51,6 +51,11 @@ export class TetrisEngine {
     const randomIndex = Math.floor(this.randomGenerator() * types.length);
     const randomType = types[randomIndex];
 
+    // 型安全性確保: types配列のインデックスは必ず有効
+    if (!randomType) {
+      throw new Error('Invalid random tetromino generation');
+    }
+
     return {
       type: randomType,
       shape: TETROMINO_SHAPES[randomType],
@@ -63,8 +68,18 @@ export class TetrisEngine {
    * テトロミノを回転
    */
   public rotateTetromino(tetromino: Tetromino): Tetromino {
-    const rotatedShape = tetromino.shape[0].map((_, index) =>
-      tetromino.shape.map(row => row[index]).reverse()
+    const firstRow = tetromino.shape[0];
+    if (!firstRow) {
+      throw new Error('Invalid tetromino shape for rotation');
+    }
+
+    const rotatedShape = firstRow.map((_, index) =>
+      tetromino.shape
+        .map(row => {
+          const cell = row[index];
+          return cell !== undefined ? cell : 0;
+        })
+        .reverse()
     );
 
     return {
@@ -82,8 +97,12 @@ export class TetrisEngine {
     newPosition: Position
   ): boolean {
     for (let y = 0; y < tetromino.shape.length; y++) {
-      for (let x = 0; x < tetromino.shape[y].length; x++) {
-        if (tetromino.shape[y][x] !== 0) {
+      const row = tetromino.shape[y];
+      if (!row) continue;
+
+      for (let x = 0; x < row.length; x++) {
+        const cell = row[x];
+        if (cell !== undefined && cell !== 0) {
           const newX = newPosition.x + x;
           const newY = newPosition.y + y;
 
@@ -91,7 +110,7 @@ export class TetrisEngine {
             newX < 0 ||
             newX >= BOARD_WIDTH ||
             newY >= BOARD_HEIGHT ||
-            (newY >= 0 && board[newY][newX] !== 0)
+            (newY >= 0 && board[newY]?.[newX] !== 0)
           ) {
             return false;
           }
@@ -108,8 +127,12 @@ export class TetrisEngine {
     const newBoard = board.map(row => [...row]);
 
     for (let y = 0; y < tetromino.shape.length; y++) {
-      for (let x = 0; x < tetromino.shape[y].length; x++) {
-        if (tetromino.shape[y][x] !== 0) {
+      const row = tetromino.shape[y];
+      if (!row) continue;
+
+      for (let x = 0; x < row.length; x++) {
+        const cell = row[x];
+        if (cell !== undefined && cell !== 0) {
           const boardY = tetromino.position.y + y;
           const boardX = tetromino.position.x + x;
 
@@ -119,7 +142,10 @@ export class TetrisEngine {
             boardX >= 0 &&
             boardX < BOARD_WIDTH
           ) {
-            newBoard[boardY][boardX] = 1;
+            const targetRow = newBoard[boardY];
+            if (targetRow) {
+              targetRow[boardX] = 1;
+            }
           }
         }
       }
@@ -154,7 +180,11 @@ export class TetrisEngine {
       Math.max(0, linesCleared),
       baseScores.length - 1
     );
-    return baseScores[clampedLines] * (level + 1);
+    const baseScore = baseScores[clampedLines];
+    if (baseScore === undefined) {
+      throw new Error(`Invalid score calculation for ${linesCleared} lines`);
+    }
+    return baseScore * (level + 1);
   }
 
   /**

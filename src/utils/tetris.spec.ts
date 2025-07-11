@@ -103,10 +103,10 @@ describe('テトリス仕様', () => {
         expect(blockCount, 'Oピースは4ブロックで構成される').toBe(4);
 
         // 2x2の正方形パターンを確認
-        expect(oPieceShape[0][0], 'Oピースは左上にブロックを持つ').toBe(1);
-        expect(oPieceShape[0][1], 'Oピースは右上にブロックを持つ').toBe(1);
-        expect(oPieceShape[1][0], 'Oピースは左下にブロックを持つ').toBe(1);
-        expect(oPieceShape[1][1], 'Oピースは右下にブロックを持つ').toBe(1);
+        expect(oPieceShape[0]?.[0], 'Oピースは左上にブロックを持つ').toBe(1);
+        expect(oPieceShape[0]?.[1], 'Oピースは右上にブロックを持つ').toBe(1);
+        expect(oPieceShape[1]?.[0], 'Oピースは左下にブロックを持つ').toBe(1);
+        expect(oPieceShape[1]?.[1], 'Oピースは右下にブロックを持つ').toBe(1);
       });
     });
 
@@ -191,7 +191,7 @@ describe('テトリス仕様', () => {
 
       it('他のピースと重複する位置への配置は不可能である', () => {
         // ボード下部に障害物を配置
-        emptyBoard[BOARD_HEIGHT - 1][5] = 1;
+        emptyBoard[BOARD_HEIGHT - 1]![5] = 1;
 
         const piece = getRandomTetromino();
         piece.position = { x: 5, y: BOARD_HEIGHT - 1 };
@@ -230,7 +230,7 @@ describe('テトリス仕様', () => {
       boardWithCompleteLine = createEmptyBoard();
       // 最下段を完全に埋める
       for (let x = 0; x < BOARD_WIDTH; x++) {
-        boardWithCompleteLine[BOARD_HEIGHT - 1][x] = 1;
+        boardWithCompleteLine[BOARD_HEIGHT - 1]![x] = 1;
       }
     });
 
@@ -241,7 +241,7 @@ describe('テトリス仕様', () => {
 
       // 最下段が空になっていることを確認
       const bottomRow = result.newBoard[BOARD_HEIGHT - 1];
-      const isBottomEmpty = bottomRow.every(cell => cell === 0);
+      const isBottomEmpty = bottomRow?.every(cell => cell === 0);
       expect(isBottomEmpty, '消去されたラインは空になる').toBe(true);
     });
 
@@ -249,7 +249,7 @@ describe('テトリス仕様', () => {
       // 下2段を完全に埋める
       for (let y = BOARD_HEIGHT - 2; y < BOARD_HEIGHT; y++) {
         for (let x = 0; x < BOARD_WIDTH; x++) {
-          boardWithCompleteLine[y][x] = 1;
+          boardWithCompleteLine[y]![x] = 1;
         }
       }
 
@@ -263,7 +263,7 @@ describe('テトリス仕様', () => {
       const incompleteBoard = createEmptyBoard();
       for (let x = 0; x < BOARD_WIDTH - 1; x++) {
         // 1セル未満
-        incompleteBoard[BOARD_HEIGHT - 1][x] = 1;
+        incompleteBoard[BOARD_HEIGHT - 1]![x] = 1;
       }
 
       const result = clearLines(incompleteBoard);
@@ -350,8 +350,8 @@ describe('テトリス仕様', () => {
       // ボード上部を埋める
       const fullTopBoard = createEmptyBoard();
       for (let x = 0; x < BOARD_WIDTH; x++) {
-        fullTopBoard[0][x] = 1;
-        fullTopBoard[1][x] = 1;
+        fullTopBoard[0]![x] = 1;
+        fullTopBoard[1]![x] = 1;
       }
 
       const piece = getRandomTetromino();
